@@ -1,0 +1,170 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-weight: 300;
+    letter-spacing: 2px;
+    font-size: 48px;
+}
+
+p {
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 1px;
+    font-size: 30px;
+    color: #333333;
+}
+
+.header {
+    position: relative;
+    text-align: center;
+    background: linear-gradient(60deg, rgb(166, 215, 255) 0%, rgb(52, 167, 243) 100%);
+    color: white;
+}
+
+.inner-header {
+    height: 65vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.waves {
+    position: relative;
+    width: 100%;
+    height: 15vh;
+    margin-bottom: -7px;
+    min-height: 100px;
+    max-height: 150px;
+}
+
+.content {
+    position: relative;
+    height: 20vh;
+    text-align: center;
+    background-color: white;
+}
+
+.parallax>use {
+    animation: move-forever 25s cubic-bezier(.55, .5, .45, .5) infinite;
+}
+
+.parallax>use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 7s;
+}
+
+.parallax>use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 10s;
+}
+
+.parallax>use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 13s;
+}
+
+.parallax>use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 20s;
+}
+
+@keyframes move-forever {
+    0% {
+        transform: translate3d(-90px, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(85px, 0, 0);
+    }
+}
+
+@media (max-width: 768px) {
+    .waves {
+        height: 40px;
+        min-height: 40px;
+    }
+
+    .content {
+        height: 30vh;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
+.B1{
+    position: absolute;
+    width: 100%;
+    height:40px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 948px;
+    background: #333;
+}
+.B2{
+    position: absolute;
+    width: 108px;
+    height: 53px;
+    left: 971px;
+    right: 841px;
+    top: 39px;
+    bottom: 988px;
+    color: rgb(255, 255, 255);
+    font-family: Noto Sans SC;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 53px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+.B3{
+    position:relative;
+    z-index: index 30;
+    height: 40px;
+    font: size 12px;
+    color:#b0b0b0;
+    background:#333;
+}
+.B3 .B4{
+    float:left;
+    height: 40px;
+    line-height: height 40px;
+}
+.B3 .B5{
+    margin: 0 .3em;
+    color: #424242;
+    float:left;
+}
+.B6{
+position: absolute;
+top:15%;
+left:65%;
+}
+.B7{
+position: absolute;
+top:12%;
+left:5%;
+}
+.B8{
+position: absolute;
+top:35%;
+}
+.C1:hover{
+background-color: rgb(226, 226, 226);
+border-radius:5px;
+}

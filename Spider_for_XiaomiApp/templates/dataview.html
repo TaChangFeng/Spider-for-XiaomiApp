@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于ECharts的应用数据可视化大屏</title>
+    <link rel="stylesheet" href="../static/css/a1.css"/>
+</head>
+<body>
+    <header>
+        <h1>基于ECharts的应用评分数据可视化</h1>
+        <div class="time"></div>
+        <a class="back" href="javascript:void(0);" style="text-decoration: none; font-size: 16px;" onclick="goBack()">返回分类爬取页面</a>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+        <script src="../static/js/time.js"></script>
+    </header>
+
+    <section class="mainbox">
+        <!-- 左侧部分 -->
+        <div class="column">
+            <div class="panel lup">
+                <h2>——当前数据库各分类应用存储数量柱状图——</h2>
+                <div class="chart"></div>
+                <div class="panel-footer"></div>
+            </div>
+            <div class="panel ldown">
+                <h2>——当前数据库各分类应用存储数量饼图——</h2>
+                <div class="chart"></div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+        <!-- 中间部分 -->
+        <div class="column">
+            <div class="no">
+                <div class="no-a">
+                    <ul>
+                        <li>7</li>
+                        <li id="total_data_count">0</li>
+                    </ul>
+                </div>
+                <div class="no-b">
+                    <ul>
+                        <li>当前数据库内集合数量</li>
+                        <li>当前数据库内总数据数量</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="map">
+                <div class="map1"></div>
+                <div class="map2"></div>
+                <div class="map3"></div>
+                <div class="chart">
+                    <div class="midpanel mid">
+                        <h2>——各类别数据综合柱状图（数据量、评分大于8、评分人数大于1000）——</h2>
+                        <div class="chart" style="margin-top: 50px;"></div>
+                        <div class="panel-footer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧部分 -->
+        <div class="column">
+            <div class="panel rup">
+                <h2>各类别应用评分高于8分数量</h2>
+                <div class="chart"></div>
+                <div class="panel-footer"></div>
+            </div>
+            <div class="panel rdown">
+                <h2>——综合数据分析板——</h2>
+                <div class="chart">
+                    <h2 style="color: rgba(255,255,255,.6);">软件评分大于8分数据最多类别为</h2>
+                    <h1 id="max_high_rating_category" style="height: 0.6rem;color: #ffeb7b;line-height: .6rem;text-align: center;font-size: 0.25rem;font-weight: 400;font-size: 30px;font-family: 黑体;"></h1>
+                    <h2 style="color: rgba(255,255,255,.6);margin-top: 50px;">参与评分人数大于1000的数据最多类别为</h2>
+                    <h1 id="max_rating_numbers_category" style="height: 0.6rem;color: #ffeb7b;line-height: .6rem;text-align: center;font-size: 0.25rem;font-weight: 400;font-size: 30px;font-family: 黑体;"></h1>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </section>
+    <script src="../static/js/flexible.js"></script>
+    <script src="../static/js/echarts.min.js"></script>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/china.js"></script>
+    <script src="../static/js/ch.js"></script>
+    <script>
+        var categoryMapping = {
+            'apps1': '金融理财',
+            'apps2': '聊天社交',
+            'apps3': '旅行交通',
+            'apps4': '居家生活',
+            'apps5': '实用工具',
+            'apps6': '摄影摄像',
+            'apps7': '图书阅读'
+        };
+        // 发送 AJAX 请求获取评分大于8分的数据数量
+        var xhr1 = new XMLHttpRequest();
+        xhr1.open('GET', '/get_high_rating_data_count', true);
+        xhr1.onreadystatechange = function () {
+            if (xhr1.readyState === XMLHttpRequest.DONE && xhr1.status === 200) {
+                var high_rating_counts = JSON.parse(xhr1.responseText);
+
+                // 找到评分大于8分的数量最多的类别
+                var max_high_rating_category = Object.keys(high_rating_counts).reduce((a, b) => high_rating_counts[a] > high_rating_counts[b] ? a : b);
+
+                // 显示评分大于8分的数量最多的类别
+                document.getElementById('max_high_rating_category').innerText = categoryMapping[max_high_rating_category];
+            }
+        };
+        xhr1.send();
+
+        // 发送 AJAX 请求获取评分人数大于1000的数据数量
+        var xhr2 = new XMLHttpRequest();
+        xhr2.open('GET', '/rating_numbers', true);
+        xhr2.onreadystatechange = function () {
+            if (xhr2.readyState === XMLHttpRequest.DONE && xhr2.status === 200) {
+                var rating_numbers = JSON.parse(xhr2.responseText);
+
+                // 找到评分人数大于1000的数量最多的类别
+                var max_rating_numbers_category = Object.keys(rating_numbers).reduce((a, b) => rating_numbers[a] > rating_numbers[b] ? a : b);
+
+                // 显示评分人数大于1000的数量最多的类别
+                document.getElementById('max_rating_numbers_category').innerText = categoryMapping[max_rating_numbers_category];
+            }
+        };
+        xhr2.send();
+
+    </script>
+</body>
+</html>

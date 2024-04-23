@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分类爬取存储与展示</title>
+    <link rel="stylesheet" href="../static/css/pic.css">
+    <link rel="stylesheet" href="../static/css/main2.css"/>
+    <style>
+        .book-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+            color:rgba(255, 255, 255, 0.7);
+        }
+        
+        .book-card {
+            background:linear-gradient(0deg, rgb(0, 85, 142) 10%, rgba(255, 255, 255, 0.458) 90%);
+            width: 250px;
+            height: 250px;
+            border: 2px solid rgb(0, 85, 142);
+            padding: 10px;
+            box-sizing: border-box;
+            margin: 10px;
+            text-align: center;  /* 居中文本和图片 */
+            transition: border-color 0.3s ease-in-out;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+
+        .book-card:hover{
+            border: 2px solid #ffeb7b;
+            border-radius: 10px;
+        }
+
+        .book-card img {
+            max-width: 100%;
+            height: auto;
+            display: block;  /* 避免下方间隙 */
+            margin: 0 auto;  /* 图片水平居中 */
+        }
+
+        .book-card a {
+            text-decoration: none;
+            color: #ffeb7b;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            margin: 0 4px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .pagination .current {
+            color: #fff;
+            background-color: #30b44b;
+            border: 1px solid #30b44b;
+            padding: 8px 16px;
+        }
+        form {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            width: 200px;  /* 调整输入框的宽度 */
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #30b44b;
+            color: #fff;
+            margin-right: 50px;
+            border: none;
+            cursor: pointer;
+        }
+
+        a.return-btn {
+            margin-left: 10px;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ddd;
+            color: #333;
+        }
+    </style>
+</head>
+<body background="../static/img/bg1.jpg" style="background-size: 100% 100%;background-repeat: no-repeat;background-attachment: fixed;">
+    <div class="B1">
+        <div class="B4">
+            <a rel="nofollow" href="https://app.mi.com/" style="color:white;text-decoration: none;float:left;margin-top: 10px;margin-left: 10px;">小米应用商店</a>
+            <span class="B5" style="float:left;margin-top: 10px;margin-left: 10px;" >|</span>
+            <a rel="nofollow" href="https://www.csdn.net/" style="color:white;text-decoration: none;float:left;margin-top: 10px;margin-left: 10px;">CSDN官网</a>
+            <span class="B5" style="float:left;margin-top: 10px;margin-left: 10px;" >|</span>
+            <a rel="nofollow" href="https://www.runoob.com/" style="color:white;text-decoration: none;float:left;margin-top: 10px;margin-left: 10px;">菜鸟教程</a>
+        </div>
+    </div>
+    <div class="A2 A3" style="background-color: rgba(0, 63, 130, 0.508);border-color: #ffeb7b;">
+    </div>      
+    <div class="B6">
+        <a class="D1" href="{{ url_for('dataview') }}" style="color: #fff;border-radius: 5px;margin-left: -30px;">数据可视化展示</a>
+        <h1 class="D6" style="margin-left: 400px;margin-top: -10px;color: rgba(255, 255, 255);font-size: 32px;">数据分类爬取存储与展示</h1>
+        <div class="time" style="color:rgba(255, 255, 255, 0.7)"></div>
+        <script src="../static/js/time.js"></script>
+    </div>
+    <div style="margin-top: 130px; margin-left: 100px; display: flex; align-items: center;">
+        <span style="font-size: large; margin-right: auto;color: rgba(255, 255, 255, 0.7);">爬取网站：https://app.mi.com  小米应用商店</span>
+        <span style="font-size: large; margin-right: 10px;color: rgba(255, 255, 255, 0.7);">爬取页数：</span>
+        <input type="number" id="crawlLimit" placeholder="请输入" min="1" max="10" style="padding: 10px; border-radius: 5px; border: 1px solid #ddd; margin-right: 10px; width: 80px;height: 30px;border-color: rgb(0, 85, 142);font-size: medium;background-color: rgba(0, 63, 130, 0.508);color: rgba(255, 255, 255, 0.7);">
+        <span style="font-size: large; margin-right: 10px;color: rgba(255, 255, 255, 0.7);">选择分类：</span>
+        <select id="category" style="padding: 5px; border-radius: 5px; height: 50px;width:200px;font-size: medium;border-color: rgb(0, 85, 142);background-color: rgba(0, 63, 130, 0.508);color: rgba(255, 255, 255, 0.7);">
+            <option value="none" selected="selected">请选择分类</option>
+            <option value="1">01金融理财</option>
+            <option value="2">02聊天社交</option>
+            <option value="3">03旅行交通</option>
+            <option value="4">04居家生活</option>
+            <option value="5">05实用工具</option>
+            <option value="6">06摄影摄像</option>
+            <option value="7">07图书阅读</option>
+        </select>
+        <button id="startCrawling" onclick="startCrawling()" style="padding: 8px 20px; border-radius: 5px; background-color: rgb(0, 85, 142); color: #fff; margin-left: 10px; cursor: pointer;border: none;height: 50px;font-size: medium;">开始爬取</button>
+        <button id="displayData" onclick="displayData(1)" style="padding: 8px 20px; border-radius: 5px; background-color: rgb(0, 85, 142); color: #fff; margin-left: 10px; cursor: pointer;border: none;height: 50px;font-size: medium;margin-right: 100px;">查看数据</button>
+
+    
+    </div>
+
+    <div id="dataContainer" class="book-container">
+    </div>
+
+     <!-- 分页控件 -->
+     <div class="pagination" id="pagination">
+        <a href="#" id="prevPage" onclick="prevPage()" style="color: rgba(255, 255, 255, 0.7);background-color: rgb(0, 85, 142);border-color: rgb(0, 85, 142);border-radius: 5px;">上一页</a>
+        <span id="currentPage" style="color: rgba(255, 255, 255, 0.7);font-size: large;">1</span><span style="color: rgba(255, 255, 255, 0.7);font-size: large;">/</span> <span id="totalPages" style="color: rgba(255, 255, 255, 0.7);font-size: large;">1</span>
+        <a href="#" id="nextPage" onclick="nextPage()" style="color: rgba(255, 255, 255, 0.7);background-color: rgb(0, 85, 142);border-color: rgb(0, 85, 142);border-radius: 5px;">下一页</a>
+    </div>
+    
+
+    <script>
+        function startCrawling() {
+            var crawlLimit = document.getElementById('crawlLimit').value; // 爬取数量
+            var category = document.getElementById('category').value; // 分类信息
+            console.log("Category selected:", category);
+            console.log("Crawl limit:", crawlLimit);
+
+            if (crawlLimit === '' || crawlLimit < 1 || crawlLimit > 10) {
+                alert('请输入1到10之间的整数作为爬取数量！');
+                return;
+            }
+
+            if (category === 'none') {
+                alert('请选择分类后再点击开始爬取按钮！');
+            } else {
+                var xhr = new XMLHttpRequest();
+                var url = '/start_crawling'; 
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            console.log("Response:", xhr.responseText);
+                            alert('爬取完成'); 
+                        } else {
+                            console.error("Failed to make request:", xhr.status);
+                        }
+                    }
+                };
+                var data = JSON.stringify({ 'cid': category, 'num': crawlLimit }); 
+                xhr.send(data);
+            }
+        }
+
+    
+        function displayData(page) {
+            var category = document.getElementById('category').value;
+            fetch(`/get_data_from_mongodb/${category}?page=${page}`)
+                .then(response => response.text()) // 将响应转换为文本
+                .then(data => {
+                    console.log("Response:", data);
+                    // 尝试将响应解析为 JSON
+                    try {
+                        var jsonData = JSON.parse(data);
+                        var container = document.getElementById('dataContainer');
+                        container.innerHTML = '';  // 清空之前的内容
+                        // 遍历数据
+                        jsonData.data.forEach(function (item, index) {
+                            setTimeout(function() {
+                                var card = document.createElement('div');
+                                card.classList.add('book-card');
+
+                                var appIcon = document.createElement('img')
+                                appIcon.src = item['应用图标'];
+
+                                var appName = document.createElement('h3');
+                                appName.textContent = item['应用名'];
+
+                                var appType = document.createElement('p');
+                                appType.textContent = item['应用类型'];
+
+                                var linkText = document.createElement('span');
+                                linkText.textContent = '应用链接：';
+
+                                var appHerf = document.createElement('a');
+                                appHerf.href = item['应用链接']; 
+                                appHerf.textContent = item['应用名']; 
+
+                                card.appendChild(appIcon);
+                                card.appendChild(appName);
+                                card.appendChild(appType);
+                                card.appendChild(linkText); 
+                                card.appendChild(appHerf);
+
+                                container.appendChild(card);
+                                
+                                if (index === jsonData.data.length - 1) {
+                                    document.getElementById('currentPage').textContent = page;
+                                    document.getElementById('totalPages').textContent = jsonData.total_pages;
+                                }
+                            }, index * 500);
+                        });
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        alert('获取数据失败，请稍后重试！');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    alert('获取数据失败，请稍后重试！');
+                });
+        }
+
+        function prevPage() {
+            var currentPage = parseInt(document.getElementById('currentPage').textContent);
+            if (currentPage > 1) {
+                displayData(currentPage - 1);
+            }
+        }
+
+        function nextPage() {
+            var currentPage = parseInt(document.getElementById('currentPage').textContent);
+            var totalPages = parseInt(document.getElementById('totalPages').textContent);
+            if (currentPage < totalPages) {
+                displayData(currentPage + 1);
+            }
+        }
+    </script>
+</body>
+</html>
